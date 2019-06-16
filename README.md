@@ -4,6 +4,8 @@
 * Pickpocket must hover the cursor on the victim as long as it's configured to rob him 
 * Manage who can rob and who cannot be robbed with permissions
 
+See the preview video of how plugin works on [Youtube](https://youtu.be/O_NKTCZmKEg)
+
 You can buy custom extension features to this plugin just message us on [VK](https://vk.com/pluginsrestoremonarchy) or [Discord](https://discord.gg/yBztk3w)
 
 There's also more advanced version of this plugin available to buy at [ImperialPlugins.com](https://imperialplugins.com/Products/ProductDetails/162)
