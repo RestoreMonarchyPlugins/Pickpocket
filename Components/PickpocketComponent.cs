@@ -1,0 +1,99 @@
+﻿using RestoreMonarchy.Pickpocket.Helpers;
+using Rocket.Unturned.Chat;
+using Rocket.Unturned.Player;
+using SDG.Unturned;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
+using System.Timers;
+using UnityEngine;
+
+namespace RestoreMonarchy.Pickpocket.Components
+{
+    public class PickpocketComponent : MonoBehaviour
+    {
+        private PickpocketPlugin pluginInstance;
+        public Timer Timer { get; set; }
+        public UnturnedPlayer Pickpocket { get; set; }
+        public UnturnedPlayer Victim { get; set; }
+        private bool IsInitialized = false;
+
+        public void Initialize(UnturnedPlayer pickpocket, UnturnedPlayer victim, PickpocketPlugin pluginInstance)
+        {
+            this.Pickpocket = pickpocket;
+            this.Victim = victim;
+            this.pluginInstance = pluginInstance;
+            this.Timer = new Timer(pluginInstance.Configuration.Instance.PickpocketTime * 1000);
+            Timer.AutoReset = false;
+            Timer.Elapsed += Timer_Elapsed;
+            Timer.Disposed += Timer_Disposed;
+            Timer.Start();
+
+            this.IsInitialized = true;
+        }
+
+        void FixedUpdate()
+        {
+            if (IsInitialized)
+            {
+                Player victimPlayer = RaycastHelper.GetPlayerFromHits(Pickpocket.Player,
+                        RaycastHelper.RaycastAll(new Ray(Pickpocket.Player.look.aim.position, Pickpocket.Player.look.aim.forward), 5f, RayMasks.PLAYER_INTERACT));
+
+                if (victimPlayer != Victim.Player)
+                {
+                    Timer.Dispose();
+                }
+            }
+        }
+
+        private void Timer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            UnturnedChat.Say(Pickpocket.CSteamID, pluginInstance.Translate("SUCCESS", Victim.CharacterName));
+            if (pluginInstance.Configuration.Instance.NotifyVictim)
+                UnturnedChat.Say(Victim.CSteamID, pluginInstance.Translate("NOTIFY_SUCCESS", Pickpocket.CharacterName));
+
+            System.Random random = new System.Random();
+
+            List<Tuple<ItemJar, byte, byte>> items = new List<Tuple<ItemJar, byte, byte>>();
+            for (byte page = 0; page < 6; page++)
+            {
+               for (byte i = 0; i < Victim.Inventory.items[page].getItemCount(); i++)
+               {
+                    if (Victim.Inventory.items[page].getItem(i) != null)
+                        items.Add(new Tuple<ItemJar, byte, byte>(Victim.Inventory.items[page].getItem(i), page, i));
+               }
+            }
+
+            if (items.Count <= 0)
+                UnturnedChat.Say(Pickpocket.CSteamID, pluginInstance.Translate("NOTHING", Victim.CharacterName));
+            else
+            {
+                var item = items[random.Next(items.Count)];
+                Victim.Inventory.removeItem(item.Item2, item.Item3);
+                Pickpocket.Inventory.forceAddItem(item.Item1.item, true);
+            }
+
+            Destroy(this);
+        }
+
+
+        private void Timer_Disposed(object sender, EventArgs e)
+        {
+            UnturnedChat.Say(Pickpocket.CSteamID, pluginInstance.Translate("FAIL", Victim.CharacterName));
+            if (pluginInstance.Configuration.Instance.NotifyVictim)
+                UnturnedChat.Say(Victim.CSteamID, pluginInstance.Translate("NOTIFY_FAIL", Pickpocket.CharacterName));
+            
+            Destroy(this);
+        }
+
+        void OnDestroy()
+        {
+            Timer.Elapsed -= Timer_Elapsed;
+            Timer.Disposed -= Timer_Disposed;
+        }
+
+    }
+}
