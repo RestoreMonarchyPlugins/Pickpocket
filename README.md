@@ -1,7 +1,7 @@
 [![Version](https://img.shields.io/github/release/RestoreMonarchyPlugins/Pickpocket.svg)](https://github.com/RestoreMonarchyPlugins/Pickpocket/releases) ![Discord](https://discordapp.com/api/guilds/520355060312440853/widget.png)
 ## Pickpocket - RocketMod 4 Plugin
 * Let your players steal items from others instead of killing
-* Pickpocket must hover the cursor on the victim to rob him as long as it's configured
+* Pickpocket must hover the cursor on the victim as long as it's configured to rob him 
 * Manage who can rob and who cannot be robbed with permissions
 
 You can buy custom extension features to this plugin just message us on [VK](https://vk.com/pluginsrestoremonarchy) or [Discord](https://discord.gg/yBztk3w)
