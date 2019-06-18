@@ -52,7 +52,7 @@ namespace RestoreMonarchy.Pickpocket.Components
         private void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
             UnturnedChat.Say(Pickpocket.CSteamID, pluginInstance.Translate("SUCCESS", Victim.CharacterName));
-            if (pluginInstance.Configuration.Instance.NotifyVictim)
+            if (pluginInstance.Configuration.Instance.NotifyVictimOnSuccess)
                 UnturnedChat.Say(Victim.CSteamID, pluginInstance.Translate("NOTIFY_SUCCESS", Pickpocket.CharacterName));
 
             System.Random random = new System.Random();
@@ -83,7 +83,7 @@ namespace RestoreMonarchy.Pickpocket.Components
         private void Timer_Disposed(object sender, EventArgs e)
         {
             UnturnedChat.Say(Pickpocket.CSteamID, pluginInstance.Translate("FAIL", Victim.CharacterName));
-            if (pluginInstance.Configuration.Instance.NotifyVictim)
+            if (pluginInstance.Configuration.Instance.NotifyVictimOnFail)
                 UnturnedChat.Say(Victim.CSteamID, pluginInstance.Translate("NOTIFY_FAIL", Pickpocket.CharacterName));
             
             Destroy(this);

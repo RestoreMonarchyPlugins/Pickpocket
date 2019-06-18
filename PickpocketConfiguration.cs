@@ -10,12 +10,18 @@ namespace RestoreMonarchy.Pickpocket
     public class PickpocketConfiguration : IRocketPluginConfiguration
     {
         public double PickpocketTime;
-        public bool NotifyVictim;
+        public double PickpocketCooldown;
+        public bool NotifyVictimOnSuccess;
+        public bool NotifyVictimOnFail;
+        public bool UsePermissions;
 
         public void LoadDefaults()
         {
             this.PickpocketTime = 2;
-            this.NotifyVictim = true;
+            this.PickpocketCooldown = 30;
+            this.NotifyVictimOnSuccess = false;
+            this.NotifyVictimOnFail = true;
+            this.UsePermissions = false;
         }
     }
 }
