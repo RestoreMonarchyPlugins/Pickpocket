@@ -2,7 +2,8 @@
 ## Pickpocket - RocketMod 4 Plugin
 * Let your players steal items from others instead of killing
 * Pickpocket must hover the cursor on the victim as long as it's configured to rob him 
-* Manage who can rob and who cannot be robbed with permissions
+* Manage who can rob and who cannot be robbed with permissions  
+* You can set an alert for the police in the config, if pocket theft was committed
 
 See the preview video of how plugin works on [Youtube](https://youtu.be/O_NKTCZmKEg)
 
