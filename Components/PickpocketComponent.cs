@@ -83,17 +83,14 @@ namespace RestoreMonarchy.Pickpocket.Components
                 if (pluginInstance.Configuration.Instance.NotifyPolice)
                 {
                     RocketPermissionsGroup group = R.Permissions.GetGroup(pluginInstance.Configuration.Instance.PoliceGroupId);
-                    foreach (string memberId in group.Members)
+                    Provider.clients.ForEach(client =>
                     {
-                        Provider.clients.ForEach(client =>
+                        if (group.Members.Contains(client.playerID.steamID.m_SteamID.ToString()))
                         {
-                            if (client.playerID.steamID.m_SteamID.ToString().Equals(memberId))
-                            {
-                                UnturnedChat.Say(client.playerID.steamID, pluginInstance.Translate("NOTIFY_POLICE", Pickpocket.CharacterName, 
-                                    inventoryItem.Item.interactableItem.asset.itemName, inventoryItem.Item.item.id, Victim.CharacterName), Color.red);
-                            }
-                        });
-                    }
+                            UnturnedChat.Say(client.playerID.steamID, pluginInstance.Translate("NOTIFY_POLICE", Pickpocket.CharacterName, 
+                                inventoryItem.Item.interactableItem.asset.itemName, inventoryItem.Item.item.id, Victim.CharacterName), Color.red);
+                        }
+                    });
                 }
             }
 
