@@ -96,6 +96,7 @@ namespace RestoreMonarchy.Pickpocket.Components
                     }
                 }
             }
+
             Destroy(this);
         }
 
