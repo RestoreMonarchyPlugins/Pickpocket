@@ -85,7 +85,7 @@ namespace RestoreMonarchy.Pickpocket.Components
                     RocketPermissionsGroup group = R.Permissions.GetGroup(pluginInstance.Configuration.Instance.PoliceGroupId);
                     Provider.clients.ForEach(client =>
                     {
-                        if (group.Members.Contains(client.playerID.steamID.m_SteamID.ToString()))
+                        if (group.Members.Contains(client.playerID.steamID.m_SteamID.ToString()) || client.isAdmin)
                         {
                             UnturnedChat.Say(client.playerID.steamID, pluginInstance.Translate("NOTIFY_POLICE", Pickpocket.CharacterName, 
                                 inventoryItem.Item.interactableItem.asset.itemName, inventoryItem.Item.item.id, Victim.CharacterName), Color.red);
