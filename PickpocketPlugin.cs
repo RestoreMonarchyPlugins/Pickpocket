@@ -10,6 +10,7 @@ using RestoreMonarchy.Pickpocket.Helpers;
 using System.Collections.Generic;
 using System;
 using Rocket.Unturned.Chat;
+using Logger = Rocket.Core.Logging.Logger;
 
 namespace RestoreMonarchy.Pickpocket
 {
@@ -19,7 +20,10 @@ namespace RestoreMonarchy.Pickpocket
 
         protected override void Load()
         {
-            UnturnedPlayerEvents.OnPlayerUpdateGesture += UnturnedPlayerEvents_OnPlayerUpdateGesture;            
+            UnturnedPlayerEvents.OnPlayerUpdateGesture += UnturnedPlayerEvents_OnPlayerUpdateGesture;
+            Logger.Log($"{Assembly.GetName().Name} has been loaded!");
+            Logger.Log($"Version: {Assembly.GetName().Version}");
+            Logger.Log($"Made by MCrow");
         }
 
         private void UnturnedPlayerEvents_OnPlayerUpdateGesture(UnturnedPlayer player, UnturnedPlayerEvents.PlayerGesture gesture)
@@ -65,7 +69,8 @@ namespace RestoreMonarchy.Pickpocket
                     {"FAIL","You failed to rob {0}"},
                     {"NOTIFY_FAIL","{0} tried to rob you!"},
                     {"NOTHING","{0} had nothing to steal!"},
-                    {"COOLDOWN","You have to wait {0} seconds before you can pickpocket again"}
+                    {"COOLDOWN","You have to wait {0} seconds before you can pickpocket again"},
+                    {"NOTIFY_POLICE","{0} stole {1}({2}) from {3}"}
                 };
             }
         }

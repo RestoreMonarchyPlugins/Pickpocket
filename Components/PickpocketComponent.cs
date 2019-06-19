@@ -1,4 +1,9 @@
 ﻿using RestoreMonarchy.Pickpocket.Helpers;
+using RestoreMonarchy.Pickpocket.Models;
+using Rocket.API;
+using Rocket.API.Serialisation;
+using Rocket.Core;
+using Rocket.Unturned;
 using Rocket.Unturned.Chat;
 using Rocket.Unturned.Player;
 using SDG.Unturned;
@@ -57,13 +62,13 @@ namespace RestoreMonarchy.Pickpocket.Components
 
             System.Random random = new System.Random();
 
-            List<Tuple<ItemJar, byte, byte>> items = new List<Tuple<ItemJar, byte, byte>>();
+            List<InventoryItem> items = new List<InventoryItem>();
             for (byte page = 0; page < 6; page++)
             {
                for (byte i = 0; i < Victim.Inventory.items[page].getItemCount(); i++)
                {
                     if (Victim.Inventory.items[page].getItem(i) != null)
-                        items.Add(new Tuple<ItemJar, byte, byte>(Victim.Inventory.items[page].getItem(i), page, i));
+                        items.Add(new InventoryItem(Victim.Inventory.items[page].getItem(i), page, i));
                }
             }
 
@@ -71,11 +76,26 @@ namespace RestoreMonarchy.Pickpocket.Components
                 UnturnedChat.Say(Pickpocket.CSteamID, pluginInstance.Translate("NOTHING", Victim.CharacterName));
             else
             {
-                var item = items[random.Next(items.Count)];
-                Victim.Inventory.removeItem(item.Item2, item.Item3);
-                Pickpocket.Inventory.forceAddItem(item.Item1.item, true);
-            }
+                var inventoryItem = items[random.Next(items.Count)];
+                Victim.Inventory.removeItem(inventoryItem.Page, inventoryItem.Index);
+                Pickpocket.Inventory.forceAddItem(inventoryItem.Item.item, true);
 
+                if (pluginInstance.Configuration.Instance.NotifyPolice)
+                {
+                    RocketPermissionsGroup group = R.Permissions.GetGroup(pluginInstance.Configuration.Instance.PoliceGroupId);
+                    foreach (string memberId in group.Members)
+                    {
+                        Provider.clients.ForEach(client =>
+                        {
+                            if (client.playerID.steamID.m_SteamID.ToString().Equals(memberId))
+                            {
+                                UnturnedChat.Say(client.playerID.steamID, pluginInstance.Translate("NOTIFY_POLICE", Pickpocket.CharacterName, 
+                                    inventoryItem.Item.interactableItem.asset.itemName, inventoryItem.Item.item.id, Victim.CharacterName), Color.red);
+                            }
+                        });
+                    }
+                }
+            }
             Destroy(this);
         }
 

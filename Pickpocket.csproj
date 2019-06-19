@@ -68,6 +68,7 @@
   <ItemGroup>
     <Compile Include="Components\PickpocketComponent.cs" />
     <Compile Include="Helpers\RaycastHelper.cs" />
+    <Compile Include="Models\InventoryItem.cs" />
     <Compile Include="PickpocketConfiguration.cs" />
     <Compile Include="PickpocketPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

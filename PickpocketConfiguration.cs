@@ -14,6 +14,8 @@ namespace RestoreMonarchy.Pickpocket
         public bool NotifyVictimOnSuccess;
         public bool NotifyVictimOnFail;
         public bool UsePermissions;
+        public bool NotifyPolice;
+        public string PoliceGroupId;
 
         public void LoadDefaults()
         {
@@ -22,6 +24,8 @@ namespace RestoreMonarchy.Pickpocket
             this.NotifyVictimOnSuccess = false;
             this.NotifyVictimOnFail = true;
             this.UsePermissions = false;
+            this.NotifyPolice = false;
+            this.PoliceGroupId = "police";
         }
     }
 }
