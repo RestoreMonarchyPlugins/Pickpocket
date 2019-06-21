@@ -30,32 +30,35 @@ namespace RestoreMonarchy.Pickpocket
         {
             if (gesture == UnturnedPlayerEvents.PlayerGesture.Point)
             {
-                if (Cooldowns.TryGetValue(player.Id, out DateTime expireDate) && expireDate > DateTime.Now)
-                {
-                    UnturnedChat.Say(player.CSteamID, Translate("COOLDOWN", Math.Truncate((expireDate - DateTime.Now).TotalSeconds)));
-                } else
-                {
-                    if (expireDate != null)
-                        Cooldowns.Remove(player.Id);
+                 
 
-                    RocketPlayer rocketPlayer = new RocketPlayer(player.Id);
-                    if (Configuration.Instance.UsePermissions && rocketPlayer.HasPermission("pickpocket") || rocketPlayer.IsAdmin)
+                RocketPlayer rocketPlayer = new RocketPlayer(player.Id);
+                if (!Configuration.Instance.UsePermissions || rocketPlayer.HasPermission("pickpocket"))
+                {
+                    Player victimPlayer = RaycastHelper.GetPlayerFromHits(player.Player,
+                        RaycastHelper.RaycastAll(new Ray(player.Player.look.aim.position, player.Player.look.aim.forward), 5f, RayMasks.PLAYER_INTERACT));
+
+                    if (victimPlayer != null)
                     {
-                        Player victimPlayer = RaycastHelper.GetPlayerFromHits(player.Player,
-                            RaycastHelper.RaycastAll(new Ray(player.Player.look.aim.position, player.Player.look.aim.forward), 5f, RayMasks.PLAYER_INTERACT));
-
-                        if (victimPlayer != null)
+                        if (Cooldowns.TryGetValue(player.Id, out DateTime expireDate) && expireDate > DateTime.Now)
                         {
+                            UnturnedChat.Say(player.CSteamID, Translate("COOLDOWN", Math.Truncate((expireDate - DateTime.Now).TotalSeconds)));
+                        }
+                        else
+                        {
+                            if (expireDate != null)
+                                Cooldowns.Remove(player.Id);
+
                             UnturnedPlayer victim = UnturnedPlayer.FromPlayer(victimPlayer);
-                            if (Configuration.Instance.UsePermissions && victim.HasPermission("bypass.pickpocket") || victim.IsAdmin)
+                            if (victim.HasPermission("bypass.pickpocket"))
                                 return;
 
                             PickpocketComponent comp = player.Player.gameObject.AddComponent<PickpocketComponent>();
                             comp.Initialize(player, victim, this);
                             Cooldowns.Add(player.Id, DateTime.Now.AddSeconds(Configuration.Instance.PickpocketCooldown));
-                        }
+                        }                        
                     }
-                }                
+                }             
             }            
         }
 
