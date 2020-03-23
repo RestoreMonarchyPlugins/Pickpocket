@@ -9,7 +9,7 @@ namespace RestoreMonarchy.Pickpocket.Helpers
     {
         public static RaycastHit[] RaycastAll(Ray ray, float maxDistance, int layerMask, QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.UseGlobal)
         {
-            if ((layerMask & RayMasks.GROUND) == RayMasks.GROUND)
+            if ((layerMask & 1048576) == 1048576)
             {
                 LandscapeHoleUtility.raycastIgnoreLandscapeIfNecessary(ray, maxDistance, ref layerMask);
             }

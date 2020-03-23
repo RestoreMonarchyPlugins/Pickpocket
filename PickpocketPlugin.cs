@@ -42,7 +42,7 @@ namespace RestoreMonarchy.Pickpocket
                     {
                         if (Cooldowns.TryGetValue(player.Id, out DateTime expireDate) && expireDate > DateTime.Now)
                         {
-                            UnturnedChat.Say(player.CSteamID, Translate("COOLDOWN", Math.Truncate((expireDate - DateTime.Now).TotalSeconds)));
+                            UnturnedChat.Say(player.CSteamID, Translate("COOLDOWN", System.Math.Truncate((expireDate - DateTime.Now).TotalSeconds)));
                         }
                         else
                         {
