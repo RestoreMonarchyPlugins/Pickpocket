@@ -16,7 +16,15 @@ There's also more advanced version of this plugin available to buy at [ImperialP
 <?xml version="1.0" encoding="utf-8"?>
 <PickpocketConfiguration xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <PickpocketTime>2</PickpocketTime>
-  <NotifyVictim>true</NotifyVictim>
+  <PickpocketCooldown>30</PickpocketCooldown>
+  <NotifyVictimOnSuccess>false</NotifyVictimOnSuccess>
+  <NotifyVictimOnFail>true</NotifyVictimOnFail>
+  <UsePermissions>false</UsePermissions>
+  <NotifyPolice>false</NotifyPolice>
+  <PoliceGroupId>police</PoliceGroupId>
+  <MaxDistance>5</MaxDistance>
+  <UseBypass>true</UseBypass>
+  <MessageColor>yellow</MessageColor>
 </PickpocketConfiguration>
 ```
 
@@ -29,5 +37,8 @@ There's also more advanced version of this plugin available to buy at [ImperialP
   <Translation Id="FAIL" Value="You failed to rob {0}" />
   <Translation Id="NOTIFY_FAIL" Value="{0} tried to rob you!" />
   <Translation Id="NOTHING" Value="{0} had nothing to steal!" />
+  <Translation Id="COOLDOWN" Value="You have to wait {0} seconds before you can pickpocket again" />
+  <Translation Id="NOTIFY_POLICE" Value="{0} stole {1}({2}) from {3}" />
+  <Translation Id="BYPASS" Value="This player cannot be robbed" />
 </Translations>
 ```
