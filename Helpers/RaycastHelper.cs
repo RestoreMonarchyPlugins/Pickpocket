@@ -7,29 +7,17 @@ namespace RestoreMonarchy.Pickpocket.Helpers
 {
     public class RaycastHelper
     {
-        public static RaycastHit[] RaycastAll(Ray ray, float maxDistance, int layerMask, QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.UseGlobal)
+        public static Player GetPlayerFromHits(Player caller, float maxDistance)
         {
-            if ((layerMask & 1048576) == 1048576)
-            {
-                LandscapeHoleUtility.raycastIgnoreLandscapeIfNecessary(ray, maxDistance, ref layerMask);
-            }
-            return Physics.RaycastAll(ray, maxDistance, layerMask, queryTriggerInteraction);
-        }
-
-        public static Player GetPlayerFromHits(Player caller, RaycastHit[] hits)
-        {
+            var hits = Physics.RaycastAll(new Ray(caller.look.aim.position, caller.look.aim.forward), maxDistance, RayMasks.PLAYER_INTERACT | RayMasks.PLAYER);
             Player player = null;
-            int hitsCount = hits.Count();
-            if (hitsCount > 0)
-            {                
-                for (int i = 0; i < hitsCount; i++)
+            for (int i = 0; i < hits.Length; i++)
+            {
+                Player suspect = hits[i].transform.GetComponentInParent<Player>();
+                if (suspect != caller)
                 {
-                    Player suspect = hits[i].transform.GetComponentInParent<Player>();
-                    if (suspect != caller)
-                    {
-                        player = suspect;
-                        break;
-                    }
+                    player = suspect;
+                    break;
                 }
             }
             return player;
