@@ -23,44 +23,46 @@ namespace RestoreMonarchy.Pickpocket
         {
             MessageColor = UnturnedChat.GetColorFromName(Configuration.Instance.MessageColor, Color.green);
             Cooldowns = new Dictionary<string, DateTime>();
-            UnturnedPlayerEvents.OnPlayerUpdateGesture += UnturnedPlayerEvents_OnPlayerUpdateGesture;
+            SteamChannel.onTriggerSend += OnTriggerSend;
             Logger.Log($"{Assembly.GetName().Name} {Assembly.GetName().Version} has been loaded!", ConsoleColor.Yellow);
         }
 
-        private void UnturnedPlayerEvents_OnPlayerUpdateGesture(UnturnedPlayer player, UnturnedPlayerEvents.PlayerGesture gesture)
+        private void OnTriggerSend(SteamPlayer player, string name, ESteamCall mode, ESteamPacket type, params object[] arguments)
         {
-            if (gesture == UnturnedPlayerEvents.PlayerGesture.Point)
+            if (name == "tellGesture")
             {
-                RocketPlayer rocketPlayer = new RocketPlayer(player.Id);
-                if (!Configuration.Instance.UsePermissions || rocketPlayer.HasPermission("pickpocket"))
+                var up = UnturnedPlayer.FromSteamPlayer(player);
+                var id = int.Parse(arguments[0].ToString());
+                if (id == 8)
                 {
-                    Player victimPlayer = RaycastHelper.GetPlayerFromHits(player.Player, Configuration.Instance.MaxDistance);
-
-                    if (victimPlayer != null)
+                    if (!Configuration.Instance.UsePermissions || up.HasPermission("pickpocket"))
                     {
-                        if (Cooldowns.TryGetValue(player.Id, out DateTime expireDate) && expireDate > DateTime.Now)
-                        {
-                            UnturnedChat.Say(player.CSteamID, Translate("COOLDOWN", System.Math.Truncate((expireDate - DateTime.Now).TotalSeconds)), MessageColor);
-                        }
-                        else
-                        {
-                            if (expireDate != null)
-                                Cooldowns.Remove(player.Id);
+                        Player victimPlayer = RaycastHelper.GetPlayerFromHits(up.Player, Configuration.Instance.MaxDistance);
 
-                            UnturnedPlayer victim = UnturnedPlayer.FromPlayer(victimPlayer);
-                            if (victim.HasPermission("bypass.pickpocket"))
+                        if (victimPlayer != null)
+                        {
+                            if (Cooldowns.TryGetValue(up.Id.ToString(), out DateTime expireDate) && expireDate > DateTime.Now)
                             {
-                                UnturnedChat.Say(player, Translate("BYPASS"), MessageColor);
-                                return;
-                            }   
-
-                            PickpocketComponent comp = player.Player.gameObject.AddComponent<PickpocketComponent>();
-                            comp.Initialize(player, victim, this);
-                            Cooldowns.Add(player.Id, DateTime.Now.AddSeconds(Configuration.Instance.PickpocketCooldown));
-                        }                        
+                                UnturnedChat.Say(up.CSteamID, Translate("COOLDOWN", System.Math.Truncate((expireDate - DateTime.Now).TotalSeconds)), MessageColor);
+                            }
+                            else
+                            {
+                                if (expireDate != null)
+                                    Cooldowns.Remove(up.Id);
+                                UnturnedPlayer victim = UnturnedPlayer.FromPlayer(victimPlayer);
+                                if (victim.HasPermission("bypass.pickpocket"))
+                                {
+                                    UnturnedChat.Say(up, Translate("BYPASS"), MessageColor);
+                                    return;
+                                }
+                                PickpocketComponent comp = up.Player.gameObject.AddComponent<PickpocketComponent>();
+                                comp.Initialize(up, victim, this);
+                                Cooldowns.Add(up.Id, DateTime.Now.AddSeconds(Configuration.Instance.PickpocketCooldown));
+                            }
+                        }
                     }
-                }             
-            }            
+                }
+            }
         }
 
         public override TranslationList DefaultTranslations => new TranslationList()
@@ -78,7 +80,7 @@ namespace RestoreMonarchy.Pickpocket
         protected override void Unload()
         {
             Logger.Log($"{Assembly.GetName().Name} has been unloaded!", ConsoleColor.Yellow);
-            UnturnedPlayerEvents.OnPlayerUpdateGesture -= UnturnedPlayerEvents_OnPlayerUpdateGesture;
+            SteamChannel.onTriggerSend -= OnTriggerSend;
         }
     }
 }
